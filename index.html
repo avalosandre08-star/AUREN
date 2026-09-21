@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AUREN — Architecture · Design · Intelligence</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0a0a0b;color:#f5f5f5;font-family:Arial,sans-serif}header{display:flex;justify-content:space-between;align-items:center;padding:28px 7%;border-bottom:1px solid #26262a}nav a{color:#aaa;text-decoration:none;margin-left:24px}main{padding:80px 7%;max-width:1250px;margin:auto}.tag{color:#888;letter-spacing:4px;font-size:12px}.hero{min-height:65vh;display:flex;flex-direction:column;justify-content:center}.hero h1{font-size:clamp(55px,10vw,140px);line-height:.9;margin:25px 0;letter-spacing:-7px}.hero p{max-width:480px;color:#aaa;font-size:18px;line-height:1.6}.btn{display:inline-block;background:#f5f5f5;color:#111;padding:15px 22px;border:0;margin-top:20px;cursor:pointer;text-decoration:none}.section{padding:70px 0;border-top:1px solid #29292d}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}.card{background:#141417;padding:24px;border:1px solid #29292d;min-height:170px}.card small{color:#888}.card h3{font-size:24px}.form{display:grid;gap:12px;max-width:600px}.form input,.form textarea,.form select{padding:14px;background:#111;color:#fff;border:1px solid #444}.status{color:#aaa;margin-top:15px}footer{padding:35px 7%;color:#777;border-top:1px solid #29292d}
+</style>
+</head>
+<body>
+<header><strong>AUREN</strong><nav><a href="#explorar">Explorar</a><a href="#publicar">Publicar</a><a href="#api">Estado</a></nav></header>
+<main>
+<section class="hero"><span class="tag">ARCHITECTURE · DESIGN · INTELLIGENCE</span><h1>RETHINK<br>CREATE.</h1><p>Un espacio para descubrir proyectos, recursos y nuevas herramientas para la arquitectura y el diseño.</p><a class="btn" href="#explorar">Explorar proyectos</a></section>
+<section id="explorar" class="section"><span class="tag">01 / EXPLORE</span><h2>Proyectos destacados</h2><div id="projects" class="grid"></div></section>
+<section id="publicar" class="section"><span class="tag">02 / COMMUNITY</span><h2>Publica tu proyecto</h2><form id="form" class="form"><input id="title" placeholder="Nombre del proyecto" required><input id="author" placeholder="Autor" required><select id="category"><option>Vivienda</option><option>Conceptual</option><option>Urbanismo</option><option>Interiorismo</option><option>Académico</option></select><textarea id="description" placeholder="Descripción"></textarea><button class="btn">Enviar a revisión</button><div id="msg" class="status"></div></form></section>
+<section id="api" class="section"><span class="tag">03 / SYSTEM</span><h2>Estado del sistema</h2><div id="health" class="status">Comprobando...</div></section>
+</main><footer>AUREN © 2026 — Architecture · Design · Intelligence</footer>
+<script>
+async function load(){const r=await fetch('/api/projects?status=approved');const d=await r.json();document.querySelector('#projects').innerHTML=d.projects.map(p=>`<article class="card"><small>${p.category}</small><h3>${p.title}</h3><p>${p.description}</p><small>Por ${p.author}</small></article>`).join('')||'<p>No hay proyectos todavía.</p>'}
+document.querySelector('#form').addEventListener('submit',async e=>{e.preventDefault();const body={title:title.value,author:author.value,category:category.value,description:description.value};const r=await fetch('/api/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();msg.textContent=d.success?'Proyecto enviado correctamente para revisión.':d.error; if(d.success)e.target.reset()});
+fetch('/api/health').then(r=>r.json()).then(d=>health.textContent=d.status==='online'?'● AUREN está online':'Sistema no disponible');
+load();
+</script></body></html>
